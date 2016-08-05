@@ -1,0 +1,35 @@
+{
+  "name": "correl8-cli",
+  "version": "0.0.1",
+  "description": "Correl8.me CLI interface for storing and retrieving time based data",
+  "main": "app.js",
+  "dependencies": {
+    "correl8": "^0.1.0",
+    "lockfile": "^1.0.1",
+    "nopt": "^3.0.4",
+    "nopt-usage": "^0.1.0",
+    "path": "^0.12.7",
+    "prompt": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node --harmony app.js"
+  },
+  "author": "Samuel Rinnetmäki",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:correl8/cli.git"
+  },
+  "keywords": [
+    "lifelogging",
+    "life",
+    "management",
+    "platform",
+    "dashboard"
+  ],
+  "bugs": {
+    "url": "https://github.com/correl8/cli/issues"
+  },
+  "homepage": "https://correl8.me/"
+}
