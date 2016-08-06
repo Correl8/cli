@@ -76,25 +76,28 @@ lockFile.lock(lock, {}, function(er) {
     })
   }
   else if (options['clear']) {
-    for (var i=0; i<types.length; i++) {
-      c8.type(types[i].name).clear().then(function(res) {
-        console.log('Index for type ' + types[i] + ' cleared.');
+    var c8array = [];
+    for (let i=0; i<types.length; i++) {
+      c8array[i] = new correl8(type);
+      c8array[i].type(types[i].name).clear().then(function(res) {
+        console.log('Index for type ' + types[i].name + ' cleared.');
       }).catch(function(error) {
         console.trace(error);
-        c8.release();
       });
     }
   }
   else if (options['initialize']) {
-    for (var i=0; i<types.length; i++) {
-      var type = types[i];
-      var fields = type.fields;
-      // console.log('Initializing ' + type.name + ' with ' + JSON.stringify(fields));
-      c8.type(type.name).init(fields).then(function(res) {
-        // console.log('Index initialized.');
+    var c8array = [];
+    for (let i=0; i<types.length; i++) {
+      let type = types[i].name;
+      let fields = types[i].fields;
+      // console.log('Initializing ' + type + ' with ' + JSON.stringify(fields));
+      // new c8 instance for each type for parallel async execution
+      c8array[i] = new correl8(type);
+      c8array[i].init(fields).then(function(res) {
+        console.log('Index ' + type + ' initialized.');
       }).catch(function(error) {
         console.trace(error);
-        c8.release();
       });
     }
   }
