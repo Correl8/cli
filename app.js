@@ -43,7 +43,7 @@ var adapter = require(options['adapter']);
 var c8 = correl8(adapter.sensorName);
 var types = adapter.types;
 
-var lock = '/tmp/correl8-adapter-lock-' + adapter; // make configurable?
+var lock = '/tmp/correl8-adapter-lock-' + adapter.sensorName; // make configurable?
 lockFile.lock(lock, {}, function(er) {
   if (er) {
     c8.release();
@@ -96,25 +96,31 @@ lockFile.lock(lock, {}, function(er) {
       c8array[i] = new correl8(type);
       c8array[i].init(fields).then(function(res) {
         console.log('Index ' + type + ' initialized.');
+      }).then(function(res) {
+        // c8array[i].release();
       }).catch(function(error) {
         console.trace(error);
       });
     }
   }
   else {
-    c8.isInitialized().then(function() {
-      c8.config().then(function(res) {
+    return c8.isInitialized().then(function() {
+      return c8.config().then(function(res) {
         // console.log(res);
         var conf = c8.trimResults(res);
         var opts = {firstDate: firstDate, lastDate: lastDate};
         if (conf) {
           // console.log(adapter);
-          adapter.importData(c8, conf, opts).then(function() {
-            console.log('Import succesful!');
-          }).catch(function(error) {
-            console.log('Import unsuccesful!');
-            console.trace(error);
-          });
+          var result = adapter.importData(c8, conf, opts);
+          // we don't know if a promise is returned... :-(
+          if (result && result.then && result.catch) {
+            result.then(function() {
+              console.log('Import succesful!');
+            }).catch(function(error) {
+              console.log('Import unsuccesful!');
+              console.trace(error);
+            });
+          }
         }
         else {
           var msg = 'Configure first! Run\n node ' + process.argv[1] +
@@ -122,12 +128,12 @@ lockFile.lock(lock, {}, function(er) {
           console.log(msg);
           // console.log('Usage: ');
           // console.log(noptUsage(knownOpts, shortHands, description));
-          c8.release();
+          return c8.release();
         }
       });
     }).catch(function(error) {
       console.trace(error);
-      c8.release();
+      return c8.release();
     });
   }
   lockFile.unlock(lock, function (er) {
