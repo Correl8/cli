@@ -46,9 +46,8 @@ var types = adapter.types;
 var lock = '/tmp/correl8-adapter-lock-' + adapter.sensorName; // make configurable?
 lockFile.lock(lock, {}, function(er) {
   if (er) {
-    c8.release();
     console.error('Lockfile ' + lock + ' exists!');
-    process.exit;
+      process.exit();
   }
   if (options['help']) {
     console.log('Usage: ');
