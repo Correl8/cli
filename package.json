@@ -4,9 +4,9 @@
   "description": "Correl8.me CLI interface for storing and retrieving time based data",
   "main": "app.js",
   "dependencies": {
-    "correl8": "^0.1.0",
+    "correl8": "^0.2.0",
     "lockfile": "^1.0.1",
-    "nopt": "^3.0.4",
+    "nopt": "^4.0.1",
     "nopt-usage": "^0.1.0",
     "path": "^0.12.7",
     "prompt": "^1.0.0"
