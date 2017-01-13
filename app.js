@@ -95,14 +95,23 @@ lockFile.lock(lock, {}, function(er) {
       // new c8 instance for each type for parallel async execution
       c8array[i] = new correl8(type);
       c8array[i].init(fields).then(function(res) {
-        console.log('Index ' + type + ' initialized.');
+        console.log('Index ' + type + ' initialized: ' + JSON.stringify(res));
       }).catch(function(error) {
         console.trace(error);
       });
     }
   }
   else {
-    c8.isInitialized().then(function() {
+    c8.isInitialized().then(function(result) {
+      if (!result) {
+        var msg = 'Initialize first! Run\n node ' + process.argv[1] +
+          ' --adapter ' + options['adapter'] + ' --initialize'
+        console.log(msg);
+        // console.log('Usage: ');
+        // console.log(noptUsage(knownOpts, shortHands, description));
+        c8.release();
+        process.exit();
+      }
       c8.config().then(function(res) {
         // console.log(res);
         var conf = c8.trimResults(res);
@@ -123,6 +132,7 @@ lockFile.lock(lock, {}, function(er) {
           // console.log('Usage: ');
           // console.log(noptUsage(knownOpts, shortHands, description));
           c8.release();
+          process.exit();
         }
       });
     }).catch(function(error) {
