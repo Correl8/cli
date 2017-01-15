@@ -40,7 +40,7 @@ if (!options['adapter']) {
 var firstDate = options['from'] || null;
 var lastDate = options['to'] || null;
 var adapter = require(options['adapter']);
-var c8 = correl8(adapter.sensorName);
+var c8 = correl8(adapter.types[0].name);
 var types = adapter.types;
 
 var lock = '/tmp/correl8-adapter-lock-' + adapter.sensorName; // make configurable?
@@ -104,6 +104,7 @@ lockFile.lock(lock, {}, function(er) {
   }
   else {
     c8.isInitialized().then(function(result) {
+      var initStatus = result;
       if (!result) {
         var msg = 'Initialize first! Run\n node ' + process.argv[1] +
           ' --adapter ' + options['adapter'] + ' --initialize'
@@ -132,7 +133,7 @@ lockFile.lock(lock, {}, function(er) {
         }
         else {
           var msg = 'Configure first! Run\n node ' + process.argv[1] +
-            ' --adapter ' + options['adapter'] + ' --settings'
+            ' --adapter ' + options['adapter'] + ' --settings';
           console.log(msg);
           // console.log('Usage: ');
           // console.log(noptUsage(knownOpts, shortHands, description));
