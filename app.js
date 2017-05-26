@@ -40,7 +40,7 @@ if (!options['adapter']) {
 var firstDate = options['from'] || null;
 var lastDate = options['to'] || null;
 var adapter = require(options['adapter']);
-var c8 = correl8(adapter.types[0].name);
+var c8 = correl8(adapter.sensorName);
 var types = adapter.types;
 
 var lock = '/tmp/correl8-adapter-lock-' + adapter.sensorName; // make configurable?
@@ -72,7 +72,9 @@ lockFile.lock(lock, {}, function(er) {
           adapter.storeConfig(c8, result);
         }
       });
-    })
+    }).catch(function(error) {
+      console.trace(error);
+    });
   }
   else if (options['clear']) {
     var c8array = [];
@@ -103,7 +105,8 @@ lockFile.lock(lock, {}, function(er) {
     }
   }
   else {
-    c8.isInitialized().then(function(result) {
+    // at least the first datatype is initialized
+    c8.type(adapter.types[0].name).isInitialized().then(function(result) {
       var initStatus = result;
       if (!result) {
         var msg = 'Initialize first! Run\n node ' + process.argv[1] +
@@ -119,17 +122,11 @@ lockFile.lock(lock, {}, function(er) {
         var conf = c8.trimResults(res);
         var opts = {firstDate: firstDate, lastDate: lastDate};
         if (conf) {
-          // console.log(adapter);
-          var result = adapter.importData(c8, conf, opts);
-          // we don't know if a promise is returned... :-(
-          if (result && result.then && result.catch) {
-            result.then(function() {
-              console.log('Import succesful!');
-            }).catch(function(error) {
-              console.log('Import unsuccesful!');
-              console.trace(error);
-            });
-          }
+          adapter.importData(c8, conf, opts).then(function(message) {
+            console.log('Import succesful: ' + message);
+          }).catch(function(error) {
+            console.trace(error);
+          });
         }
         else {
           var msg = 'Configure first! Run\n node ' + process.argv[1] +
