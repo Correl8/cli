@@ -1,10 +1,10 @@
 {
   "name": "correl8-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Correl8.me CLI interface for storing and retrieving time based data",
   "main": "app.js",
   "dependencies": {
-    "correl8": "^0.2.3",
+    "correl8": "^0.2.4",
     "lockfile": "^1.0.3",
     "nopt": "^4.0.1",
     "nopt-usage": "^0.1.0",
